@@ -1,6 +1,6 @@
 require_relative 'order'
 require_relative 'menu'
-require_relative 'text_client'
+require_relative 'text_comms'
 require_relative 'tokens'
 
 class Takeaway
@@ -42,7 +42,6 @@ class Takeaway
 		text_comms = TextComms(twilio_client)
 		#TODO continue integration of TextComms
 		text_comms.send_text_confirmation(phone_number)
-
 	end
 
 	private
@@ -59,7 +58,6 @@ class Takeaway
 	# to be used in TextComms
 	# It will return an instance of a Twilio client
 	# Set up and ready to use
-
 	def create_text_client
 		credentials = TwilioCredentials.new
 		auth_token = credentials.auth_token

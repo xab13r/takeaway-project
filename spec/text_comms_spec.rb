@@ -6,11 +6,6 @@ RSpec.describe TextComms do
 			text_comms = TextComms.new('+440700000000')
 		end
 
-		xit "can calculate delivery time accurately" do
-			text_comms = TextComms.new('+440700000000')
-			expect(text_comms.delivery_time).to eq (Time.now + 4200).strftime("%H:%M")
-		end
-
 		it "can send a confirmation message with delivery time" do
 			fake_twilio = FakeTwilio.new('1','2')
 			text_comms = TextComms.new(fake_twilio)
@@ -37,7 +32,7 @@ end
 
 class FakeMessages
 	def initialize
-		# Set up a counter to take track of method calls
+		# Set up a counter to keep track of method calls
 		@counter = 0
 		# p "FakeMessages initialized"
 	end
