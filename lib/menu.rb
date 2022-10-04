@@ -3,12 +3,8 @@ def initialize
 	@menu = Array.new
 end
 
-def add(dish, price)
-	if price.is_a? Numeric
-		@menu.push({name: dish, price: price})
-	else
-		fail "Price must be a number"
-	end
+def add(dish)
+	@menu.push({name: dish.name, price: dish.price})
 end
 
 def show

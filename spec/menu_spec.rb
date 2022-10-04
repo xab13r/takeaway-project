@@ -8,23 +8,17 @@ RSpec.describe Menu do
 	end
 
 	it "can add dishes to the menu" do
+		dish = double(:dish, name: "dish_1", price: 1)
+
 		menu = Menu.new
-		menu.add("Fish and Chips", 15)
-		menu.add("Burger and Fries", 20)
-		expect(menu.show).to eq [{name: "Fish and Chips", price: 15}, {name: "Burger and Fries", price: 20}]
+		menu.add(dish)
+		expect(menu.show).to eq [{name: "dish_1", price: 1}]
 	end
 
 	context "if no dish is present" do
 		it "fails" do
 			menu = Menu.new
 			expect { menu.show }.to raise_error "No dish present"
-		end
-	end
-
-	context "if price is not a number" do
-		it "fails" do
-			menu = Menu.new
-			expect { menu.add("Fish and Chips", "15") }.to raise_error "Price must be a number"
 		end
 	end
 end
