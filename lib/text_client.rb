@@ -1,8 +1,8 @@
 require_relative 'tokens'
 require 'twilio-ruby'
 
-class textClient
-	def initialize(twilio_client)
+class TextClient
+	def initialize()
 		credentials = TwilioCredentials.new
 		@auth_token = credentials.auth_token
 		@account_sid = credentials.account_sid

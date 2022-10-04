@@ -4,7 +4,6 @@ RSpec.describe Takeaway do
 	context "at the beginning" do
 		it "creates an empty order" do
 			takeaway = Takeaway.new
-			expect(takeaway.order_status).to eq false
 			expect(takeaway.current_order).to eq []
 		end
 
@@ -70,7 +69,8 @@ RSpec.describe Takeaway do
 			takeaway.add_item("Burger and Fries", 4)
 			takeaway.add_item("Lamb Kebab", 1)
 			takeaway.place_order('07000000000')
-			expect(takeaway.order_status).to eq true
+
+			#expect(takeaway.order_status).to eq true
 		end
 
 	end

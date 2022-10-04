@@ -1,18 +1,15 @@
 require_relative 'order'
 require_relative 'menu'
+require_relative 'text_client'
 
 class Takeaway
 	def initialize
 		@order = Order.new
-		@is_placed = false
 		@menu = Menu.new
-
+		set_up_menu
 	end
 
 	def show_menu
-		@menu.add("Fish and Chips", 15)
-		@menu.add("Burger and Fries", 20)
-		@menu.add("Lamb Kebab", 18)
 		return @menu.show
 	end
 
@@ -38,17 +35,29 @@ class Takeaway
 		return @order.grand_total
 	end
 
-	def order_status
-		return @is_placed
-	end
+#	def order_status
+#		return @is_placed
+#	end
 
 	def place_order(phone_number)
-		@is_placed = true
+		# Initialized TextClient
+		client = TextClient.new
+		twilio_client = client.create_client
+		# Initialized TextComms class
+		text_comms = TextComms(twilio_client)
+		#TODO continue integration of TextComms
+
 	end
 
 	private
 
+	def set_up_menu
+		@menu.add("Fish and Chips", 15)
+		@menu.add("Burger and Fries", 20)
+		@menu.add("Lamb Kebab", 18)
+	end
+
 end
 
-takeaway = Takeaway.new
-takeaway.add_item("Fish and Chips", 2)
+#takeaway = Takeaway.new
+#takeaway.add_item("Fish and Chips", 2)
