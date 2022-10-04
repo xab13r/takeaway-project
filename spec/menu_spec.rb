@@ -20,4 +20,11 @@ RSpec.describe Menu do
 			expect { menu.show }.to raise_error "No dish present"
 		end
 	end
+
+	context "if price is not a number" do
+		it "fails" do
+			menu = Menu.new
+			expect { menu.add("Fish and Chips", "15") }.to raise_error "Price must be a number"
+		end
+	end
 end
