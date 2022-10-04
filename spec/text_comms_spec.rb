@@ -1,11 +1,7 @@
 require 'text_comms'
 
 RSpec.describe TextComms do
-	context "at the beginning" do
-		xit "can initialize" do
-			text_comms = TextComms.new('+440700000000')
-		end
-
+	context "after initialization" do
 		it "can send a confirmation message with delivery time" do
 			fake_twilio = FakeTwilio.new('1','2')
 			text_comms = TextComms.new(fake_twilio)

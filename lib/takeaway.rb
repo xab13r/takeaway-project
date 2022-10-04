@@ -39,7 +39,7 @@ class Takeaway
 		# Create a text client
 		twilio_client = create_text_client
 		# Initialized TextComms class
-		text_comms = TextComms(twilio_client)
+		text_comms = TextComms.new(twilio_client)
 		#TODO continue integration of TextComms
 		text_comms.send_text_confirmation(phone_number)
 	end
@@ -70,3 +70,6 @@ end
 
 #takeaway = Takeaway.new
 #takeaway.add_item("Fish and Chips", 2)
+#p takeaway.show_total_bill
+#p takeaway.current_order
+#takeaway.place_order("+447400048424")
