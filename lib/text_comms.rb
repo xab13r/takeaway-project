@@ -5,10 +5,8 @@ class TextComms
 	def initialize(twilio_client)
 
 		credentials = TwilioCredentials.new
-		@auth_token = credentials.auth_token
-		@account_sid = credentials.account_sid
 		@from_number = credentials.from_number
-
+		# The class is taking a Twilio client already initialized with the correct parameters
 		@twilio_client = twilio_client
 	end
 
@@ -18,8 +16,8 @@ class TextComms
 	end
 
 	def send_text_confirmation(number)
+		# Original API call
 		# client = Twilio::REST::Client.new(@account_sid, @auth_token)
-		#client = @requester.new(@account_sid, @auth_token)
 
 		text_body = "Order confirmed! It will be delivered before #{delivery_time}"
 
