@@ -22,26 +22,11 @@
 
 ### Menu class
 ```ruby
-class Dish(name, price)
-	def initialize
-	end
-
-	def name
-		# returns name of the dish
-	end
-
-	def price
-		# returns price of the dish
-	end
-end
-```
-
-```ruby
 class Menu
 	def initialize
 	end
 
-	def add(dish)
+	def add(dish, price)
 		# add a dish to the menu
 		# returns nothing
 	end

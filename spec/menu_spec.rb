@@ -7,8 +7,8 @@ RSpec.describe Menu do
 
 	it "can add dishes to the menu" do
 		menu = Menu.new
-		menu.add(double(:dish, name: "Fish and Chips", price: 15))
-		menu.add(double(:dish, name: "Burger and Fries", price: 20))
+		menu.add("Fish and Chips", 15)
+		menu.add("Burger and Fries", 20)
 		expect(menu.show).to eq [{name: "Fish and Chips", price: 15}, {name: "Burger and Fries", price: 20}]
 	end
 

@@ -3,8 +3,8 @@ def initialize
 	@menu = Array.new
 end
 
-def add(dish)
-	@menu.push({name: dish.name, price: dish.price})
+def add(dish, price)
+	@menu.push({name: dish, price: price})
 end
 
 def show

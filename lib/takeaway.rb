@@ -1,6 +1,5 @@
 require_relative 'order'
 require_relative 'menu'
-require_relative 'dish'
 
 class Takeaway
 	def initialize
@@ -11,12 +10,9 @@ class Takeaway
 	end
 
 	def show_menu
-		dish_1 = Dish.new("Fish and Chips", 15)
-		dish_2 = Dish.new("Burger and Fries", 20)
-		dish_3 = Dish.new("Lamb Kebab", 18)
-		@menu.add(dish_1)
-		@menu.add(dish_2)
-		@menu.add(dish_3)
+		@menu.add("Fish and Chips", 15)
+		@menu.add("Burger and Fries", 20)
+		@menu.add("Lamb Kebab", 18)
 		return @menu.show
 	end
 
