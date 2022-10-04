@@ -1,11 +1,15 @@
 require_relative 'order'
 require_relative 'menu'
 require_relative 'text_client'
+require_relative 'tokens'
 
 class Takeaway
 	def initialize
+		# Create an empty order
 		@order = Order.new
+		# Create an instance of Menu
 		@menu = Menu.new
+		# Set up Menu
 		set_up_menu
 	end
 
@@ -31,26 +35,37 @@ class Takeaway
 		return @order.grand_total
 	end
 
-#	def order_status
-#		return @is_placed
-#	end
-
 	def place_order(phone_number)
-		# Initialized TextClient
-		client = TextClient.new
-		twilio_client = client.create_client
+		# Create a text client
+		twilio_client = create_text_client
 		# Initialized TextComms class
 		text_comms = TextComms(twilio_client)
 		#TODO continue integration of TextComms
+		text_comms.send_text_confirmation(phone_number)
 
 	end
 
 	private
 
+	# This private method will set up the menu
+	# No need to have this as a public method
 	def set_up_menu
 		@menu.add("Fish and Chips", 15)
 		@menu.add("Burger and Fries", 20)
 		@menu.add("Lamb Kebab", 18)
+	end
+
+	# This private method will set up the text client
+	# to be used in TextComms
+	# It will return an instance of a Twilio client
+	# Set up and ready to use
+
+	def create_text_client
+		credentials = TwilioCredentials.new
+		auth_token = credentials.auth_token
+		account_sid = credentials.account_sid
+		client = Twilio::REST::Client.new(account_sid, auth_token)
+		return client
 	end
 
 end

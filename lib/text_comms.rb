@@ -10,15 +10,11 @@ class TextComms
 		@twilio_client = twilio_client
 	end
 
-	def delivery_time
-		# Allowing for delivery in within 70mins
-		return (Time.now + 4200).strftime("%H:%M")
-	end
-
 	def send_text_confirmation(number)
 		# Original API call
 		# client = Twilio::REST::Client.new(@account_sid, @auth_token)
 
+		delivery_time = (Time.now + 4200).strftime("%H:%M")
 		text_body = "Order confirmed! It will be delivered before #{delivery_time}"
 
 		@twilio_client.messages.create(

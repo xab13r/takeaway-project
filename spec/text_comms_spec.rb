@@ -2,11 +2,11 @@ require 'text_comms'
 
 RSpec.describe TextComms do
 	context "at the beginning" do
-		it "can initialize" do
+		xit "can initialize" do
 			text_comms = TextComms.new('+440700000000')
 		end
 
-		it "can calculate delivery time accurately" do
+		xit "can calculate delivery time accurately" do
 			text_comms = TextComms.new('+440700000000')
 			expect(text_comms.delivery_time).to eq (Time.now + 4200).strftime("%H:%M")
 		end

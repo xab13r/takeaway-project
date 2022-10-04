@@ -7,11 +7,6 @@ RSpec.describe Takeaway do
 			expect(takeaway.current_order).to eq []
 		end
 
-		it "has an empty receipt" do
-			takeaway = Takeaway.new
-			expect(takeaway.show_receipt).to eq []
-		end
-
 		it 'has a grand total of 0' do
 			takeaway = Takeaway.new
 			expect(takeaway.show_total_bill).to eq 0
@@ -31,7 +26,7 @@ RSpec.describe Takeaway do
 		it "can add the dish to the order" do
 			takeaway = Takeaway.new
 			takeaway.add_item("Fish and Chips", 2)
-			expect(takeaway.show_receipt).to eq [{name: "Fish and Chips", quantity:2, price: 30}]
+			expect(takeaway.current_order).to eq [{name: "Fish and Chips", quantity:2, price: 30}]
 		end
 	end
 
@@ -48,7 +43,7 @@ RSpec.describe Takeaway do
 			takeaway.add_item("Fish and Chips", 2)
 			takeaway.add_item("Burger and Fries", 4)
 			takeaway.add_item("Lamb Kebab", 1)
-			expect(takeaway.show_receipt).to eq [
+			expect(takeaway.current_order).to eq [
 				{name: "Fish and Chips", quantity:2, price: 30},
 				{name: "Burger and Fries", quantity:4, price: 80},
 				{name: "Lamb Kebab", quantity:1, price: 18}
@@ -68,7 +63,7 @@ RSpec.describe Takeaway do
 			takeaway.add_item("Fish and Chips", 2)
 			takeaway.add_item("Burger and Fries", 4)
 			takeaway.add_item("Lamb Kebab", 1)
-			takeaway.place_order('07000000000')
+			#takeaway.place_order('07000000000')
 			#expect(takeaway.order_status).to eq true
 		end
 
