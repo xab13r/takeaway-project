@@ -4,11 +4,10 @@ RSpec.describe Takeaway do
 	context "at the beginning" do
 		it "creates an empty order" do
 			takeaway = Takeaway.new
-
 			order = double(:order, show_order: [])
 			allow(order).to receive(:show_order).and_return([])
 
-			expect(takeaway.current_order).to eq [1]
+			expect(takeaway.current_order).to eq []
 		end
 
 		xit 'has a grand total of 0' do
