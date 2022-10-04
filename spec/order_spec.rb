@@ -34,4 +34,10 @@ RSpec.describe Order do
 		order.add(dish_2, 3)
 		expect(order.grand_total).to eq 90
 	end
+
+	it "fails if quantity is not a number" do
+			order = Order.new
+			dish_1 = {name: "Fish and Chips", price:15}
+			expect { order.add(dish_1, "15") }.to raise_error "Quantity must be a number"
+		end
 end
