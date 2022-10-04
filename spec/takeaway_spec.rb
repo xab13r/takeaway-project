@@ -69,7 +69,6 @@ RSpec.describe Takeaway do
 			takeaway.add_item("Burger and Fries", 4)
 			takeaway.add_item("Lamb Kebab", 1)
 			takeaway.place_order('07000000000')
-
 			#expect(takeaway.order_status).to eq true
 		end
 

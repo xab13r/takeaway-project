@@ -27,10 +27,6 @@ class Takeaway
 		end
 	end
 
-	def show_receipt
-		return @order.show_order
-	end
-
 	def show_total_bill
 		return @order.grand_total
 	end
