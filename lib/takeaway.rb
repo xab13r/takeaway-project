@@ -4,13 +4,16 @@ require_relative 'text_comms'
 require_relative 'tokens'
 
 class Takeaway
-	def initialize
-		# Create an empty order
-		@order = Order.new
+	# menu is instance of menu
+	# order is instance of order
+	def initialize(menu, order)
 		# Create an instance of Menu
-		@menu = Menu.new
+		@menu = menu
 		# Set up Menu
 		set_up_menu
+
+		# Create an empty order
+		@order = order
 	end
 
 	def show_menu
@@ -68,8 +71,8 @@ class Takeaway
 
 end
 
-#takeaway = Takeaway.new
-#takeaway.add_item("Fish and Chips", 2)
+takeaway = Takeaway.new(Menu.new, Order.new)
+takeaway.add_item("Fish and Chips", 2)
 #p takeaway.show_total_bill
-#p takeaway.current_order
+p takeaway.current_order
 #takeaway.place_order("+")
