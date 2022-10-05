@@ -21,6 +21,24 @@
 ## Class System Design
 
 ### Menu class
+
+```ruby
+class Dish
+	def initialize(name, price)
+		# set the instance
+	end
+
+	def name
+		# returns the dish name
+	end
+
+	def price
+		# returns the dish price
+	end
+end
+```
+
+
 ```ruby
 class Menu
 	def initialize
@@ -37,47 +55,33 @@ class Menu
 end
 ```
 
-### Order class
-```ruby
-class Order
-	def initialize
-	end
-
-	def is_placed?
-		# return true if the order has been placed
-	end
-
-	def show_order
-		# return itemized receipt
-	end
-
-	def grand_total
-		# return order grand total
-	end
-end
-```
-
 ### Takeaway class
 
 ```ruby
 class Takeaway
-	def initialize
+	def initialize # takes a menu and a text client
 		# creates a new order
+		#
 	end
 
 	def show_menu
 		# returns a list of all available dishes
 	end
 
+	def current_order
+		# returns an itemized list of items and quantities
+		# in the current order
+	end
+
 	def add_item(dish, quantity)
 		# adds dish and quantity to the order
 	end
 
-	def show_receipt
-		# returns itemized receipt and grand total
+	def grand_total
+		# returns the grand total for the order
 	end
 
-	def confirm_order(phone_number)
+	def place_order(phone_number)
 		# phone_number is required for text notification
 		# changes status of the order
 		# sends text confirmation
@@ -85,28 +89,9 @@ class Takeaway
 
 	private
 
-	dish_1 = Dish.new("test dish", 20)
-	dish_2 = Dish.new("test dish 2", 40)
-	dish_3 = Dish.new("test dish 3", 30)
-
-	def create_menu(menu)
-		# private method to create and return menus
+	def send_text(to_number)
+		# private method to send a text using the Twilio API
+		# returns the message status
 	end
 end
-```
-
-### TextComms class
-
-```ruby
-class TextComms(phone_number)
-	def initialize
-		# initialized with phone number
-	end
-
-	def check_order(order)
-		# double check if the order has been confirmed
-	end
-
-	def send_text
-	end
 ```
