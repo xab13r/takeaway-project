@@ -72,8 +72,8 @@ class Takeaway
 
 end
 
-takeaway = Takeaway.new(Menu.new, Order.new)
-takeaway.add_item("Fish and Chips", 2)
+#takeaway = Takeaway.new(Menu.new, Order.new)
+#takeaway.add_item("Fish and Chips", 2)
 #p takeaway.show_total_bill
 #p takeaway.current_order
 #takeaway.place_order("+")

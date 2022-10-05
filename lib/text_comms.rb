@@ -23,7 +23,6 @@ class TextComms
 			to: number,
 			body: text_body
 		)
-
 		return new_message.status
 	end
 end
