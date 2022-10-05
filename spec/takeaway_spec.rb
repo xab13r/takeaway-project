@@ -1,19 +1,13 @@
 require 'takeaway_2'
-require 'menu'
-require 'order'
+#require 'menu'
+#require 'order'
 
 RSpec.describe Takeaway do
 	context "at the beginning" do
 		it "creates an empty order" do
 			menu = double :menu
 			order = double :order
-			# This are needed because Menu is set up as soon
-			# as an instance of Takeaway is created
-			allow(menu).to receive(:add).with("Fish and Chips", 15)
-			allow(menu).to receive(:add).with("Burger and Fries", 20)
-			allow(menu).to receive(:add).with("Lamb Kebab", 18)
 			allow(order).to receive(:show_order).and_return([])
-
 			takeaway = Takeaway.new(menu, order)
 			expect(takeaway.current_order).to eq []
 		end
@@ -21,9 +15,6 @@ RSpec.describe Takeaway do
 		it 'has a grand total of 0' do
 			order = double :order
 			menu = double :menu
-			allow(menu).to receive(:add).with("Fish and Chips", 15)
-			allow(menu).to receive(:add).with("Burger and Fries", 20)
-			allow(menu).to receive(:add).with("Lamb Kebab", 18)
 			allow(order).to receive(:grand_total).and_return(0)
 			takeaway = Takeaway.new(menu, order)
 			expect(takeaway.show_total_bill).to eq 0
@@ -32,23 +23,17 @@ RSpec.describe Takeaway do
 		it "can show a menu" do
 			order = double :order
 			menu = double :menu
-			allow(menu).to receive(:add).with("Fish and Chips", 15)
-			allow(menu).to receive(:add).with("Burger and Fries", 20)
-			allow(menu).to receive(:add).with("Lamb Kebab", 18)
-
-			menu_output = [
-				{name: "Fish and Chips", price: 15},
-				{name: "Burger and Fries", price: 20},
-				{name: "Lamb Kebab", price: 18}
-			]
-
-			allow(menu).to receive(:show).and_return(menu_output)
+			allow(menu).to receive(:show).and_return([{name: "item_1", price: 1}])
 			takeaway = Takeaway.new(menu, order)
-			expect(takeaway.show_menu).to eq [
-				{name: "Fish and Chips", price: 15},
-				{name: "Burger and Fries", price: 20},
-				{name: "Lamb Kebab", price: 18}
-			]
+			expect(takeaway.show_menu).to eq [{name: "item_1", price: 1}]
+		end
+
+		it "fails to place an order" do
+			order = double :order
+			menu = double :menu
+			allow(order).to receive(:show_order).and_return([])
+			takeaway = Takeaway.new(menu, order)
+			expect { takeaway.place_order("+447000000000") }.to raise_error "Order is empty"
 		end
 	end
 
@@ -56,21 +41,17 @@ RSpec.describe Takeaway do
 		it "can add the dish to the order" do
 			order = double :order
 			menu = double :menu
-			allow(menu).to receive(:add).with("Fish and Chips", 15)
-			allow(menu).to receive(:add).with("Burger and Fries", 20)
-			allow(menu).to receive(:add).with("Lamb Kebab", 18)
 
 			menu_output = [
-				{name: "Fish and Chips", price: 15},
-				{name: "Burger and Fries", price: 20},
-				{name: "Lamb Kebab", price: 18}
+				{name: "item_1", price: 1},
+				{name: "item_2", price: 2}
 			]
 			allow(menu).to receive(:show).and_return(menu_output)
-			allow(order).to receive(:add).with({name: "Fish and Chips", price: 15}, 2)
-			allow(order).to receive(:show_order).and_return([{name: "Fish and Chips", quantity:2, price: 30}])
+			allow(order).to receive(:add).with({name: "item_1", price: 1}, 2)
+			allow(order).to receive(:show_order).and_return([{name: "item_1", quantity:2, price: 2}])
 			takeaway = Takeaway.new(menu, order)
-			takeaway.add_item("Fish and Chips", 2)
-			expect(takeaway.current_order).to eq [{name: "Fish and Chips", quantity:2, price: 30}]
+			takeaway.add_item("item_1", 2)
+			expect(takeaway.current_order).to eq [{name: "item_1", quantity:2, price: 2}]
 		end
 	end
 
@@ -78,21 +59,11 @@ RSpec.describe Takeaway do
 		it "fails" do
 			order = double :order
 			menu = double :menu
-			allow(menu).to receive(:add).with("Fish and Chips", 15)
-			allow(menu).to receive(:add).with("Burger and Fries", 20)
-			allow(menu).to receive(:add).with("Lamb Kebab", 18)
-			allow(order).to receive(:add).with(:name, :price)
 
-			menu_output = [
-				{name: "Fish and Chips", price: 15},
-				{name: "Burger and Fries", price: 20},
-				{name: "Lamb Kebab", price: 18}
-			]
-
-			allow(menu).to receive(:show).and_return(menu_output)
+			allow(menu).to receive(:show).and_return([])
 
 			takeaway = Takeaway.new(menu, order)
-			expect { takeaway.add_item("This is not on the menu", 2) }.to raise_error "Dish not on the menu"
+			expect { takeaway.add_item("item_1", 2) }.to raise_error "Dish not on the menu"
 		end
 	end
 
@@ -100,72 +71,32 @@ RSpec.describe Takeaway do
 		it "can display an itemized receipt" do
 			order = double :order
 			menu = double :menu
-			allow(menu).to receive(:add).with("Fish and Chips", 15)
-			allow(menu).to receive(:add).with("Burger and Fries", 20)
-			allow(menu).to receive(:add).with("Lamb Kebab", 18)
 
-			allow(order).to receive(:add).with({name: "Fish and Chips", price: 15}, 2)
-			allow(order).to receive(:add).with({name: "Lamb Kebab", price: 18}, 1)
-			allow(order).to receive(:add).with({name: "Burger and Fries", price: 20}, 4)
-			menu_output = [
-				{name: "Fish and Chips", price: 15},
-				{name: "Burger and Fries", price: 20},
-				{name: "Lamb Kebab", price: 18}
-			]
-
-			allow(menu).to receive(:show).and_return(menu_output)
 			allow(order).to receive(:show_order).and_return([
-					{name: "Fish and Chips", quantity:2, price: 30},
-					{name: "Burger and Fries", quantity:4, price: 80},
-					{name: "Lamb Kebab", quantity:1, price: 18}
+					{name: "item_1", quantity:2, price: 2},
+					{name: "item_2", quantity:4, price: 8},
+					{name: "item_3", quantity:1, price: 3}
 				])
 
 			takeaway = Takeaway.new(menu, order)
-			takeaway.add_item("Fish and Chips", 2)
-			takeaway.add_item("Burger and Fries", 4)
-			takeaway.add_item("Lamb Kebab", 1)
 			expect(takeaway.current_order).to eq [
-				{name: "Fish and Chips", quantity:2, price: 30},
-				{name: "Burger and Fries", quantity:4, price: 80},
-				{name: "Lamb Kebab", quantity:1, price: 18}
+				{name: "item_1", quantity:2, price: 2},
+				{name: "item_2", quantity:4, price: 8},
+				{name: "item_3", quantity:1, price: 3}
 			]
 		end
 
 		it "can display a grand total" do
 			order = double :order
 			menu = double :menu
-			allow(menu).to receive(:add).with("Fish and Chips", 15)
-			allow(menu).to receive(:add).with("Burger and Fries", 20)
-			allow(menu).to receive(:add).with("Lamb Kebab", 18)
-
-			menu_output = [
-				{name: "Fish and Chips", price: 15},
-				{name: "Burger and Fries", price: 20},
-				{name: "Lamb Kebab", price: 18}
-			]
-
-			allow(menu).to receive(:show).and_return(menu_output)
-
-			allow(order).to receive(:add).with({name: "Fish and Chips", price: 15}, 2)
-			allow(order).to receive(:add).with({name: "Lamb Kebab", price: 18}, 1)
-			allow(order).to receive(:add).with({name: "Burger and Fries", price: 20}, 4)
-			allow(order).to receive(:grand_total).and_return(128)
+			allow(order).to receive(:grand_total).and_return(42)
 			takeaway = Takeaway.new(menu, order)
-			takeaway.add_item("Fish and Chips", 2)
-			takeaway.add_item("Burger and Fries", 4)
-			takeaway.add_item("Lamb Kebab", 1)
-			expect(takeaway.show_total_bill).to eq 128
+			expect(takeaway.show_total_bill).to eq 42
 		end
 
+		#TODO Write test for this
 		xit "can place the order" do
-			order = Order.new
-			menu = Menu.new
-			takeaway = Takeaway.new(order, menu)
-			takeaway.add_item("Fish and Chips", 2)
-			takeaway.add_item("Burger and Fries", 4)
-			takeaway.add_item("Lamb Kebab", 1)
-			#takeaway.place_order('07000000000')
-			#expect(takeaway.order_status).to eq true
+
 		end
 	end
 end
