@@ -17,10 +17,13 @@ class TextComms
 		delivery_time = (Time.now + 4200).strftime("%H:%M")
 		text_body = "Order confirmed! It will be delivered before #{delivery_time}"
 
-		@twilio_client.messages.create(
+		client_messages = @twilio_client.messages
+		new_message = client_messages.create(
 			from: @from_number,
 			to: number,
 			body: text_body
 		)
+
+		return new_message.status
 	end
 end

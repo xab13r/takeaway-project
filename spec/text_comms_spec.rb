@@ -3,43 +3,27 @@ require 'text_comms'
 RSpec.describe TextComms do
 	context "after initialization" do
 		it "can send a confirmation message with delivery time" do
-			fake_twilio = FakeTwilio.new('1','2')
-			text_comms = TextComms.new(fake_twilio)
-			text_comms.send_text_confirmation("+440700000000")
+			# Using Doubles
+			# new_message is an object with a status "queued"
+			new_message = double(:message, status: 'queued')
 
-			expect(fake_twilio.messages.counter_value).to eq 1
+			# client_messages is an object with a create method
+			client_messages = double(:client_messages, create: new_message)
+			# twilio_client is an object with a messages method
+			twilio_client = double(:twilio_client, messages: client_messages)
+
+			delivery_time = (Time.now + 4200).strftime("%H:%M")
+			text_body = "Order confirmed! It will be delivered before #{delivery_time}"
+
+			expect(client_messages).to receive(:create).with(
+				from: '+17174529150',
+				to: '+447000000000',
+				body: text_body
+			).and_return(new_message)
+			expect(new_message).to receive(:status).and_return('queued')
+
+			text_comms = TextComms.new(twilio_client)
+			text_comms.send_text_confirmation('+447000000000')
 		end
-	end
-end
-
-class FakeTwilio
-	def initialize(account_sid, auth_token)
-		@fake_messages = FakeMessages.new
-		# p "Fake messages:"
-		# p @fake_messages
-	end
-
-	def messages
-		# p "Messages method called"
-		# p @fake_messages
-		return @fake_messages
-	end
-end
-
-class FakeMessages
-	def initialize
-		# Set up a counter to keep track of method calls
-		@counter = 0
-		# p "FakeMessages initialized"
-	end
-
-	def create(from:, to:, body:)
-		@counter += 1
-		# p "Create method called"
-	end
-
-	def counter_value
-		# p "Counter method called"
-		return @counter
 	end
 end
