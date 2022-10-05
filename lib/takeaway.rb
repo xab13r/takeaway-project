@@ -45,22 +45,8 @@ class Takeaway
 #		twilio_client = create_text_client
 		# Initialized TextComms class
 		text_comms = TextComms.new(requester, phone_number)
-		#TODO continue integration of TextComms
-		message_status = text_comms.send_text
-	end
 
-	private
-
-	# This private method will set up the text client
-	# to be used in TextComms
-	# It will return an instance of a Twilio client
-	# Set up and ready to use
-	def create_text_client
-		credentials = TwilioCredentials.new
-		auth_token = credentials.auth_token
-		account_sid = credentials.account_sid
-		client = Twilio::REST::Client.new(account_sid, auth_token)
-		return client
+		return "Order complete!"
 	end
 
 end

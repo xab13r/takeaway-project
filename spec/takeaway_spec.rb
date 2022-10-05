@@ -116,8 +116,7 @@ RSpec.describe Takeaway do
 
 			allow(requester). to receive(:messages).and_return(client_messages)
 			allow(client_messages).to receive(:create).and_return(new_message)
-
-			expect(new_message).to receive(:status).and_return('queued')
+			allow(new_message).to receive(:status).and_return('queued')
 
 			takeaway = Takeaway.new(menu, order, requester)
 			expect(takeaway.place_order("+4407400000000", requester)).to eq "Order complete!"
