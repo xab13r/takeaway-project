@@ -59,6 +59,15 @@ RSpec.describe Takeaway do
 		end
 	end
 
+	context "if trying to add a dish with quantity not being a number" do
+		it "fails" do
+			menu = double :menu
+			requester = double :requester
+			takeaway = Takeaway.new(menu, requester)
+			expect { takeaway.add_item("item_1", '2') }.to raise_error "Quantity must be a number"
+		end
+	end
+
 	context "after adding a few dishes" do
 		it "can display an itemized receipt" do
 			menu = double :menu
@@ -100,7 +109,6 @@ RSpec.describe Takeaway do
 			expect(takeaway.grand_total).to eq 13
 		end
 
-		#TODO Write test for this
 		it "can place the order" do
 			menu = double :menu
 			allow(menu).to receive(:show).and_return([
@@ -120,7 +128,29 @@ RSpec.describe Takeaway do
 			takeaway.add_item("item_2", 4)
 			takeaway.add_item("item_3", 1)
 
-			expect(takeaway.place_order("+4407400000000")).to eq "Order complete!"
+			expect(takeaway.place_order("+4474000000000")).to eq "Order complete!"
+		end
+
+		it "fails if the phone number is not valid" do
+			menu = double :menu
+			allow(menu).to receive(:show).and_return([
+				{name: "item_1", price: 1},
+				{name: "item_2", price: 2},
+				{name: "item_3", price: 3}
+			])
+
+			requester = double(:requester)
+
+			takeaway = Takeaway.new(menu, requester)
+			takeaway.add_item("item_1", 2)
+			takeaway.add_item("item_2", 4)
+			takeaway.add_item("item_3", 1)
+
+			# Phone number is too short
+			expect { takeaway.place_order("+440") }.to raise_error "Please enter a valid phone number"
+			# Correct number of digit but wrong country code
+			expect { takeaway.place_order("+397400000000") }.to raise_error "Please enter a valid phone number"
+
 		end
 
 		it "fails if the Twilio API call doesn't work" do
@@ -135,7 +165,7 @@ RSpec.describe Takeaway do
 			client_messages = double(:messages, create: new_message)
 			requester = double(:requester, messages: client_messages)
 
-			expect(new_message).to receive(:status).and_return("anyting but queued")
+			expect(new_message).to receive(:status).and_return("anything but queued")
 
 			takeaway = Takeaway.new(menu, requester)
 			takeaway.add_item("item_1", 2)

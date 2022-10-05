@@ -1,33 +1,36 @@
 require 'takeaway'
-#require 'menu'
-#require 'order'
+require 'dish'
+require 'menu'
+require 'dotenv/load' # Just to load environment variables
+require 'twilio-ruby'
 
-RSpec.describe Takeaway do
+RSpec.describe 'Takeaway Integration' do
 	context "at the beginning" do
 		it "creates an empty order" do
-			menu = double :menu
+			menu = Menu.new
 			requester = double :requester
 			takeaway = Takeaway.new(menu, requester)
 			expect(takeaway.current_order).to eq []
 		end
 
 		it 'has a grand total of 0' do
-			menu = double :menu
+			menu = Menu.new
 			requester = double :requester
 			takeaway = Takeaway.new(menu, requester)
 			expect(takeaway.grand_total).to eq 0
 		end
 
 		it "can show a menu" do
-			menu = double :menu
+			dish = Dish.new("item_1", 1)
+			menu = Menu.new
+			menu.add(dish)
 			requester = double :requester
-			allow(menu).to receive(:show).and_return([{name: "item_1", price: 1}])
 			takeaway = Takeaway.new(menu, requester)
 			expect(takeaway.show_menu).to eq [{name: "item_1", price: 1}]
 		end
 
 		it "fails to place an order" do
-			menu = double :menu
+			menu = Menu.new
 			requester = double :requester
 			takeaway = Takeaway.new(menu, requester)
 			expect { takeaway.place_order("+447000000000") }.to raise_error "Order is empty"
@@ -36,13 +39,12 @@ RSpec.describe Takeaway do
 
 	context "if a dish in on the menu" do
 		it "can add the dish to the order" do
-			menu = double :menu
+			dish_1 = Dish.new("item_1", 1)
+			dish_2 = Dish.new("item_2", 2)
+			menu = Menu.new
+			menu.add(dish_1)
+			menu.add(dish_2)
 			requester = double :requester
-			menu_output = [
-				{name: "item_1", price: 1},
-				{name: "item_2", price: 2}
-			]
-			allow(menu).to receive(:show).and_return(menu_output)
 			takeaway = Takeaway.new(menu, requester)
 			takeaway.add_item("item_1", 2)
 			expect(takeaway.current_order).to eq [{name: "item_1", quantity:2, price: 2}]
@@ -51,24 +53,25 @@ RSpec.describe Takeaway do
 
 	context "if a dish is not on the menu" do
 		it "fails" do
-			menu = double :menu
+			dish_1 = Dish.new("item_1", 1)
+			menu = Menu.new
+			menu.add(dish_1)
 			requester = double :requester
-			allow(menu).to receive(:show).and_return([])
 			takeaway = Takeaway.new(menu, requester)
-			expect { takeaway.add_item("item_1", 2) }.to raise_error "Dish not on the menu"
+			expect { takeaway.add_item("item_2", 2) }.to raise_error "Dish not on the menu"
 		end
 	end
 
 	context "after adding a few dishes" do
-		it "can display an itemized receipt" do
-			menu = double :menu
+		it "can display an itemized receipt and a grand total" do
+			dish_1 = Dish.new("item_1", 1)
+			dish_2 = Dish.new("item_2", 2)
+			dish_3 = Dish.new("item_3", 3)
+			menu = Menu.new
+			menu.add(dish_1)
+			menu.add(dish_2)
+			menu.add(dish_3)
 			requester = double :requester
-			allow(menu).to receive(:show).and_return([
-					{name: "item_1", price: 1},
-					{name: "item_2", price: 2},
-					{name: "item_3", price: 3}
-				])
-
 			takeaway = Takeaway.new(menu, requester)
 			takeaway.add_item("item_1", 2)
 			takeaway.add_item("item_2", 4)
@@ -79,70 +82,27 @@ RSpec.describe Takeaway do
 				{name: "item_2", quantity:4, price: 8},
 				{name: "item_3", quantity:1, price: 3}
 			]
-		end
-
-		it "can display a grand total" do
-
-			menu = double :menu
-			requester = double :requester
-
-			allow(menu).to receive(:show).and_return([
-					{name: "item_1", price: 1},
-					{name: "item_2", price: 2},
-					{name: "item_3", price: 3}
-				])
-
-			takeaway = Takeaway.new(menu, requester)
-			takeaway.add_item("item_1", 2)
-			takeaway.add_item("item_2", 4)
-			takeaway.add_item("item_3", 1)
-
 			expect(takeaway.grand_total).to eq 13
 		end
 
-		#TODO Write test for this
-		it "can place the order" do
-			menu = double :menu
-			allow(menu).to receive(:show).and_return([
-				{name: "item_1", price: 1},
-				{name: "item_2", price: 2},
-				{name: "item_3", price: 3}
-			])
+		# This is excluded as it will actually call the API
+		# Check takeaway_spec.rb for a mocked version
+		xit "can place the order" do
+			dish_1 = Dish.new("item_1", 1)
+			dish_2 = Dish.new("item_2", 2)
+			dish_3 = Dish.new("item_3", 3)
+			menu = Menu.new
+			menu.add(dish_1)
+			menu.add(dish_2)
+			menu.add(dish_3)
 
-			new_message = double(:message)
-			client_messages = double(:messages, create: new_message)
-			requester = double(:requester, messages: client_messages)
-
-			expect(new_message).to receive(:status).and_return("queued")
-
-			takeaway = Takeaway.new(menu, requester)
+			client = Twilio::REST::Client.new(ENV['TWILIO_ACCOUNT_SID'], ENV['TWILIO_AUTH_TOKEN'])
+			takeaway = Takeaway.new(menu, client)
 			takeaway.add_item("item_1", 2)
 			takeaway.add_item("item_2", 4)
 			takeaway.add_item("item_3", 1)
 
-			expect(takeaway.place_order("+4407400000000")).to eq "Order complete!"
-		end
-
-		it "fails if the Twilio API call doesn't work" do
-			menu = double :menu
-			allow(menu).to receive(:show).and_return([
-				{name: "item_1", price: 1},
-				{name: "item_2", price: 2},
-				{name: "item_3", price: 3}
-			])
-
-			new_message = double(:message)
-			client_messages = double(:messages, create: new_message)
-			requester = double(:requester, messages: client_messages)
-
-			expect(new_message).to receive(:status).and_return("anyting but queued")
-
-			takeaway = Takeaway.new(menu, requester)
-			takeaway.add_item("item_1", 2)
-			takeaway.add_item("item_2", 4)
-			takeaway.add_item("item_3", 1)
-
-			expect { takeaway.place_order("+4407400000000")}.to raise_error "An error occurred - Please try again"
+			expect(takeaway.place_order("+44740000000")).to eq "Order complete!"
 		end
 	end
 end
