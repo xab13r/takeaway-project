@@ -9,8 +9,6 @@ class Takeaway
 	def initialize(menu, order)
 		# Create an instance of Menu
 		@menu = menu
-		# Set up Menu
-		set_up_menu
 
 		# Create an empty order
 		@order = order
@@ -39,6 +37,9 @@ class Takeaway
 	end
 
 	def place_order(phone_number)
+		# Fail if the it's order is empty
+
+		fail "Order is empty" if @order.show_order.empty?
 		# Create a text client
 		twilio_client = create_text_client
 		# Initialized TextComms class
@@ -51,11 +52,11 @@ class Takeaway
 
 	# This private method will set up the menu
 	# No need to have this as a public method
-	def set_up_menu
-		@menu.add("Fish and Chips", 15)
-		@menu.add("Burger and Fries", 20)
-		@menu.add("Lamb Kebab", 18)
-	end
+	#def set_up_menu
+	#	@menu.add("Fish and Chips", 15)
+	#	@menu.add("Burger and Fries", 20)
+	#	@menu.add("Lamb Kebab", 18)
+	#end
 
 	# This private method will set up the text client
 	# to be used in TextComms
@@ -71,8 +72,8 @@ class Takeaway
 
 end
 
-takeaway = Takeaway.new(Menu.new, Order.new)
-takeaway.add_item("Fish and Chips", 2)
+#takeaway = Takeaway.new(Menu.new, Order.new)
+#takeaway.add_item("Fish and Chips", 2)
 #p takeaway.show_total_bill
-p takeaway.current_order
+#p takeaway.current_order
 #takeaway.place_order("+")
