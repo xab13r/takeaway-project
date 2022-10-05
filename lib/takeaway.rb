@@ -6,12 +6,10 @@ require_relative 'tokens'
 class Takeaway
 	# menu is instance of menu
 	# order is instance of order
-	def initialize(menu, order)
-		# Create an instance of Menu
+	def initialize(menu, order, requester)
 		@menu = menu
-
-		# Create an empty order
 		@order = order
+		@requester = requester
 	end
 
 	def show_menu
@@ -23,7 +21,7 @@ class Takeaway
 	end
 
 	def add_item(dish_name, quantity)
-		# if dish is on the menu then can be added to the order
+		# if a dish is on the menu then can be added to the order
 		dish_to_add = show_menu.find {|item| item[:name] == dish_name }
 		if dish_to_add
 			@order.add(dish_to_add, quantity)
@@ -36,27 +34,22 @@ class Takeaway
 		return @order.grand_total
 	end
 
-	def place_order(phone_number)
+	def place_order(phone_number, requester)
 		# Fail if the it's order is empty
-
 		fail "Order is empty" if @order.show_order.empty?
-		# Create a text client
-		twilio_client = create_text_client
+
+		# Assuming UK phone number, fail if phone is not valid
+		fail "Please enter a valid phone number" if phone_number.length != 14 && !phone_number.star_with?("+44")
+
+		# Set up the Twilio client
+#		twilio_client = create_text_client
 		# Initialized TextComms class
-		text_comms = TextComms.new(twilio_client)
+		text_comms = TextComms.new(requester, phone_number)
 		#TODO continue integration of TextComms
-		text_comms.send_text_confirmation(phone_number)
+		message_status = text_comms.send_text
 	end
 
 	private
-
-	# This private method will set up the menu
-	# No need to have this as a public method
-	#def set_up_menu
-	#	@menu.add("Fish and Chips", 15)
-	#	@menu.add("Burger and Fries", 20)
-	#	@menu.add("Lamb Kebab", 18)
-	#end
 
 	# This private method will set up the text client
 	# to be used in TextComms

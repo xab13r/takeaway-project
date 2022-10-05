@@ -5,7 +5,7 @@ class Order
 
 	def add(dish, quantity)
 		if quantity.is_a? Numeric
-			@order.push({name: dish[:name], quantity: quantity, price: quantity * dish[:price]})
+			@order.push({name: dish.name, quantity: quantity, price: quantity * dish.price})
 		else
 			fail "Quantity must be a number"
 		end

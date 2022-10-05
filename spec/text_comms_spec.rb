@@ -15,11 +15,6 @@ RSpec.describe TextComms do
 			delivery_time = (Time.now + 4200).strftime("%H:%M")
 			text_body = "Order confirmed! It will be delivered before #{delivery_time}"
 
-			expect(client_messages).to receive(:create).with(
-				from: '+17174529150',
-				to: '+447000000000',
-				body: text_body
-			).and_return(new_message)
 			expect(new_message).to receive(:status).and_return('queued')
 
 			text_comms = TextComms.new(twilio_client)
