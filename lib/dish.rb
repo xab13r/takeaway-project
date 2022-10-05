@@ -4,15 +4,9 @@ class Dish
       @name = name
       @price = price
     else
-      fail "Please check your input"
+      raise 'Please check your input'
     end
   end
 
-  def name
-    return @name
-  end
-
-  def price
-    return @price
-  end
+  attr_reader :name, :price
 end

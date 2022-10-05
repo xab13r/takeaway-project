@@ -1,6 +1,6 @@
 class Menu
   def initialize
-    @menu = Array.new
+    @menu = []
   end
 
   def add(dish)
@@ -8,8 +8,8 @@ class Menu
   end
 
   def show
-    fail "No dish present" unless !@menu.empty?
+    raise 'No dish present' if @menu.empty?
 
-    return @menu
+    @menu
   end
 end
